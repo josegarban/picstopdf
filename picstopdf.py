@@ -104,6 +104,23 @@ def get_output_filename(userinput = None):
     return output_string
 
 
+def get_folder(userinput = None):
+    """
+    Input: set by user.
+    Output: string.
+    """
+    if userinput == None:
+        print("\nWhat is the name of the folder?")
+        userinput = input("? ")
+        
+    while not os.path.exists(userinput) or "//" not in userinput or not userinput.endswith("//"):
+        print("This is not a valid folder name.")
+        print("Try entering a different path.")
+        userinput = input("? ")
+
+    return userinput
+
+
 def main (output_filename = "output.pdf", folder = "", extensions = ("jpg", "jpeg")):
     """
     Input: name of the .pdf output filename,
@@ -113,11 +130,8 @@ def main (output_filename = "output.pdf", folder = "", extensions = ("jpg", "jpe
             saved in the folder folder.
     Output: none.
     """
-    if output_filename != "output.pdf"   : output_filename = get_output_filename()
-    
-    # Function to be created
-    #if folder          != ""             : folder          = get_folder() 
-
+    if output_filename != "output.pdf"   : output_filename = get_output_filename()    
+    if folder          != ""             : folder          = get_folder() 
     if extensions      != ("jpg", "jpeg"): extensions      = get_extensions()
     
     my_files = files_in_folder_byext (folder, extensions)
