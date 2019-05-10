@@ -14,7 +14,7 @@ def files_in_folder_byext (folder, extensions = ""):
         # Find file(s) in other folder
         files = os.listdir(folder)
 
-    # Get a list with just html file names
+    # Get a list with just file names
     output_list  = []
     
     if extensions != "":
@@ -42,13 +42,59 @@ def files_in_folder_byext (folder, extensions = ""):
     return output_list
 
 
-def main (output_filename = "output.pdf", folder = "", extensions = ["jpg", "jpeg"]):
-    """
 
+def get_extensions():
     """
+    Input: set by user.
+    Output: list of valid extensions.
+    """
+    print("\nWhat extensions will be valid?")
+    print("Type each extension including the initial dot and then Enter.")
+    print("When done, leave the input blank and press Enter again.")
+    userinput = None
+    output_list = []
+    
+    while userinput != "": # The loop will stop when the user leaves the input blank
+        userinput = input("? ")
+        if userinput.startswith(".") is False and userinput != "":
+            print('The extension does not start with ".", try again')
+        elif userinput != "":
+            output_list.append (userinput) # Don't append the terminating signal
+    return output_list
+
+
+def get_output_filename():
+    """
+    Input: set by user.
+    Output: string.
+    """
+    print("\nWhat is the name of the output filename?")
+    userinput = input("? ")
+    
+    return output_string 
+
+
+def main (output_filename = "output.pdf", folder = "", extensions = ("jpg", "jpeg")):
+    """
+    Input: name of the .pdf output filename,
+            name of the folder where the files to be printed are (default: same folder where the script is)
+            extensions of the files to be joined.
+    Objective: generate a pdf file called output_filename from the files of the extensions in extensions
+            saved in the folder folder.
+    Output: none.
+    """
+    if output_filename != "output.pdf"   : output_filename = get_output_filename()
+    if output_filename.endswith(".pdf") is False : output_filename = output_filename + ".pdf"
+    
+    if folder          != ""             : folder          = get_folder()
+    if extensions      != ("jpg", "jpeg"): extensions      = get_extensions()
+    
     my_files = files_in_folder_byext (folder, extensions)
     with open (output_filename, "wb") as f:
         f.write(img2pdf.convert(my_files))
+
+    return None
+
 
 
 if __name__ == '__main__':
