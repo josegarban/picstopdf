@@ -63,15 +63,45 @@ def get_extensions():
     return output_list
 
 
-def get_output_filename():
+def get_output_filename(userinput = None):
     """
     Input: set by user.
     Output: string.
     """
-    print("\nWhat is the name of the output filename?")
-    userinput = input("? ")
-    
-    return output_string 
+    if userinput == None:
+        print("\nWhat is the name of the output filename?")
+        userinput = input("? ")
+    else:        
+        if "//" in userinput: # The user entered an entire path that can be split
+            my_path, my_tail = os.path.split(userinput)
+            
+            while not os.path.exists(my_path) or len(my_tail) == 0:
+                if not os.path.exists(my_path):
+                    print("The folder does not exist.")
+                if len(my_tail) == 0 or my_tail is None:    
+                    print("The filename is empty.")
+                    
+                print("Try entering a different path.")
+                userinput = input("? ")
+                if "//" in userinput: 
+                    my_path, my_tail = os.path.split(userinput) 
+            
+        else:
+            while len(userinput) == 0:    
+                print("The filename is empty.")
+                print("Try entering a different path.")
+                userinput = input("? ")
+            my_path, my_tail = os.getcwd(), userinput
+
+        output_string = userinput
+
+        if not output_string.endswith(".pdf"): # If the user forgets to add a .pdf file
+            output_string = output_string + ".pdf"
+            my_tail = my_tail + ".pdf"
+
+        print("File {0} will be created in folder {1}".format(my_tail, my_path))
+        
+    return output_string
 
 
 def main (output_filename = "output.pdf", folder = "", extensions = ("jpg", "jpeg")):
@@ -84,9 +114,10 @@ def main (output_filename = "output.pdf", folder = "", extensions = ("jpg", "jpe
     Output: none.
     """
     if output_filename != "output.pdf"   : output_filename = get_output_filename()
-    if output_filename.endswith(".pdf") is False : output_filename = output_filename + ".pdf"
     
-    if folder          != ""             : folder          = get_folder()
+    # Function to be created
+    #if folder          != ""             : folder          = get_folder() 
+
     if extensions      != ("jpg", "jpeg"): extensions      = get_extensions()
     
     my_files = files_in_folder_byext (folder, extensions)
